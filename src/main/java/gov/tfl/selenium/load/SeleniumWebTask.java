@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * Created by dev on 11/05/16.
@@ -18,6 +19,7 @@ public class SeleniumWebTask implements SeleniumTask {
     private String testName;
     private String url;
     private long pageWait;
+    private final static Logger logger = Logger.getLogger(SeleniumWebTask.class.getName());
     public SeleniumWebTask(WebDriver driver, String testName, List<Step> steps, String url){
         this.driver = driver;
         this.steps = steps;
@@ -71,8 +73,7 @@ public class SeleniumWebTask implements SeleniumTask {
         return by;
     }
     public void execute(){
-        System.out.println("Executing test "+testName);
-        System.out.println("Steps "+steps);
+        logger.info("Executing test "+testName);
         if(null != url) {
             driver.get(url);
             if(getPageWait() > 0)
@@ -84,13 +85,12 @@ public class SeleniumWebTask implements SeleniumTask {
                 stepA = step;
                 this.perform(step);
             }
-            assert(false);
+            assert(true);
         }catch(Exception e){
-            assert(false);
-
-            System.out.println("Test "+testName+" Failed.");
-            System.out.println("Step data : "+(null != stepA ?stepA.toJson():"is null"));
-            System.out.println("Exception is : "+e.getMessage());
+            //assert(false);
+            logger.info("Test "+testName+" Failed.");
+            logger.info("Step data : "+(null != stepA ?stepA.toJson():" Step is null"));
+            logger.info("Exception is : "+e.getMessage());
 
         }
     }

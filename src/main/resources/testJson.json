@@ -1,7 +1,76 @@
 {
-  "repetableTask":[
-    ["url"]
-  ]
-
-
+  "FailedCardTest": {
+    "url": "portal",
+    "startTask": {
+      "name": "Opus Login",
+      "type": "WebTask",
+      "steps": {
+        "input_user": {
+          "identifier": "j_username",
+          "value": "mobileagent",
+          "type": "id",
+          "action": "input"
+        },
+        "input_password": {
+          "identifier": "j_password",
+          "value": "admin",
+          "type": "id",
+          "action": "input"
+        },
+        "submit": {
+          "identifier": "signIn",
+          "type": "id",
+          "action": "click"
+        }
+      }
+    },
+    "endTask": {
+      "name": "Opus Login",
+      "type": "WebTask",
+      "steps": {
+        "input_user": {
+          "identifier": "j_username",
+          "value": "mobileagent",
+          "type": "id",
+          "action": "input"
+        },
+        "input_password": {
+          "identifier": "j_password",
+          "value": "admin",
+          "type": "id",
+          "action": "input"
+        },
+        "submit": {
+          "identifier": "signIn",
+          "type": "id",
+          "action": "click"
+        }
+      }
+    },
+    "repetableTasks": {
+      "endTask": {
+        "name": "Opus Login",
+        "type": "WebTask",
+        "steps": {
+          "input_user": {
+            "identifier": "j_username",
+            "value": "mobileagent",
+            "type": "id",
+            "action": "input"
+          },
+          "input_password": {
+            "identifier": "j_password",
+            "value": "admin",
+            "type": "id",
+            "action": "input"
+          },
+          "submit": {
+            "identifier": "signIn",
+            "type": "id",
+            "action": "click"
+          }
+        }
+      }
+    }
+  }
 }

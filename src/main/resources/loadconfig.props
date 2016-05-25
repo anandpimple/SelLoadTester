@@ -1,11 +1,12 @@
 # Url
 baseUrl=http://localhost:8080/oyster
 # Maximum load
-maxLoad=15
+maxLoad=10
 # In secs
-runTime=1000
+runTime=60
 # Terminate Immediately
 terminateNow=false
 # Test Script path - Should be in resource folder
 data=testJson.json
 pageWait=100
+visible=false

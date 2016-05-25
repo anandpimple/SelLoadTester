@@ -15,7 +15,7 @@ public class Config {
     public static final String TERMINATE_NOW = "terminateNow";
     public static final String BASE_URL = "baseUrl";
     public static final String PAGE_WAIT = "pageWait";
-    private boolean background = false;
+    public static final String VISIBLE = "visible";
     private Properties properties = new Properties();
     private long startTime = System.currentTimeMillis();
     private long lastModified;
@@ -81,13 +81,12 @@ public class Config {
     }
 
     public boolean isBackground() {
-        return background;
+        try {
+            return !Boolean.valueOf(properties.getProperty(VISIBLE));
+        }catch(Exception e){
+            return true;
+        }
     }
-
-    public void setBackground(boolean background) {
-        this.background = background;
-    }
-
     public String getConfig(String name){
         return properties.getProperty(name);
     }
