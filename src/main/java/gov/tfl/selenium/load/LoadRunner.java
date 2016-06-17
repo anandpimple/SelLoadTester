@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.openqa.selenium.WebDriver;
 
 import javax.naming.OperationNotSupportedException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -22,7 +23,8 @@ public class LoadRunner {
     private ExecutorService executor;
     private Config config;
     private List<SeleniumWebJob> seleniumWebJobs = new ArrayList<SeleniumWebJob>();
-    public LoadRunner(Config config) throws IOException {
+    private String dataDirectory = System.getenv("HOME")+"/seltestdata/";
+    public LoadRunner(Config config) throws Exception {
         this.config = config;
         Gson gson = new Gson();
         String myData = getDataAsString(config.getConfig("data"));
@@ -34,13 +36,20 @@ public class LoadRunner {
             }
             break;
         }
+
         executor =  Executors.newFixedThreadPool(config.getMaxLoad());
     }
-    private void createSeleniumJob(Map.Entry entry) throws IOException {
+    private void createSeleniumJob(Map.Entry entry) throws Exception {
         logger.log(Level.INFO,"Creating Job : "+entry.getKey());
         SeleniumWebJob job = new SeleniumWebJob(config);
-        configureJob(job,(Map)entry.getValue());
-        seleniumWebJobs.add(job);
+        try {
+            configureJob(job, (Map) entry.getValue());
+            seleniumWebJobs.add(job);
+        }catch(Throwable t){
+            job.destroy();
+            throw t;
+        }
+
     }
 
     private void configureJob(SeleniumWebJob job, Map value) {
@@ -63,10 +72,16 @@ public class LoadRunner {
         SeleniumTask selTask = null;
         if(null != task){
             String type = (String)task.get("type");
+            String inputFilePath = null != (String)task.get("inputFile")?dataDirectory+(String)task.get("inputFile"):null;
             if(null == type || type.equalsIgnoreCase("WEBTASK"))
-                selTask = new SeleniumWebTask(driver,(String)task.get("name"),configureSteps(task),(String)task.get("url"));
+
+                try {
+                    selTask = new SeleniumWebTask(driver,(String)task.get("name"),configureSteps(task),(String)task.get("url"),inputFilePath);
+                } catch (FileNotFoundException e) {
+                    throw new IllegalArgumentException("Input file "+inputFilePath+" have issue.",e);
+                }
             else
-                throw new RuntimeException("Only Web tasks are supported");
+                throw new IllegalArgumentException("Only Web tasks are supported");
 
         }
         return selTask;
@@ -88,6 +103,8 @@ public class LoadRunner {
             step.setValue((String)stepData.get("value"));
             String action = (String)stepData.get("action");
             String type = (String)stepData.get("type");
+            if(null != stepData.get("assertData"))
+                step.setAssertData((List)stepData.get("assertData"));
             step.setAction(null != action?Action.valueOf(action.toUpperCase()):Action.CLICK);
             step.setType(null != type?Type.valueOf(type.toUpperCase()):Type.ID);
             logger.log(Level.INFO,step.toString());

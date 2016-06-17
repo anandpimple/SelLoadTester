@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
+import gov.tfl.selenium.HeadlessScreenshotDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -30,7 +31,7 @@ public class SeleniumWebJob implements Callable<String>, Jsonable {
     private String url;
     public SeleniumWebJob(Config config) throws IOException {
         this.config = config;
-        driver = this.config.isBackground()?new HtmlUnitDriver():new FirefoxDriver();
+        driver = this.config.isBackground()?new HeadlessScreenshotDriver():new FirefoxDriver();
     }
     public void setAction(String action){
         this.action=action;
@@ -49,6 +50,10 @@ public class SeleniumWebJob implements Callable<String>, Jsonable {
             if(null != startTask){
                 logger.info("Running start task ");
                 startTask.execute();
+                if(startTask.hasError()){
+                    System.out.println("Start task failed");
+                    throw new Exception("Start task failed");
+                }
             }
             while (!config.shouldTerminate()) {
                 if(maxRepeat <= 0 || maxRepeat < taskRepetaed) {

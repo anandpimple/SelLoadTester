@@ -4,71 +4,34 @@
     "startTask": {
       "name": "Opus Login",
       "type": "WebTask",
+      "inputFile":"mobileAgentFile.txt",
       "steps": {
         "input_user": {
           "identifier": "j_username",
-          "value": "mobileagent",
           "type": "id",
           "action": "input"
         },
         "input_password": {
           "identifier": "j_password",
-          "value": "admin",
           "type": "id",
           "action": "input"
         },
         "submit": {
-          "identifier": "signIn",
-          "type": "id",
-          "action": "click"
+          "identifier": "login",
+          "type": "name",
+          "action": "click",
+          "assertData":["Replace failed Oyster card","Anand Pimple"]
         }
       }
     },
     "endTask": {
-      "name": "Opus Login",
+      "name": "Opus Logout",
       "type": "WebTask",
       "steps": {
-        "input_user": {
-          "identifier": "j_username",
-          "value": "mobileagent",
-          "type": "id",
-          "action": "input"
-        },
-        "input_password": {
-          "identifier": "j_password",
-          "value": "admin",
-          "type": "id",
-          "action": "input"
-        },
-        "submit": {
+        "logout": {
           "identifier": "signIn",
           "type": "id",
           "action": "click"
-        }
-      }
-    },
-    "repetableTasks": {
-      "endTask": {
-        "name": "Opus Login",
-        "type": "WebTask",
-        "steps": {
-          "input_user": {
-            "identifier": "j_username",
-            "value": "mobileagent",
-            "type": "id",
-            "action": "input"
-          },
-          "input_password": {
-            "identifier": "j_password",
-            "value": "admin",
-            "type": "id",
-            "action": "input"
-          },
-          "submit": {
-            "identifier": "signIn",
-            "type": "id",
-            "action": "click"
-          }
         }
       }
     }

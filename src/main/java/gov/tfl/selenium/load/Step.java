@@ -3,6 +3,8 @@ package gov.tfl.selenium.load;
 import com.google.gson.Gson;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 
+import java.util.List;
+
 /**
  * Created by dev on 11/05/16.
  */
@@ -13,6 +15,10 @@ public class Step implements Jsonable{
     private Type type;
     private Action action;
     private long wait;
+    private List<String>  assertData;
+    private int maxErrorScreens = 5;
+
+    private int errorScreenShot =0;
     public String getIdentifier() {
         return identifier;
     }
@@ -62,4 +68,25 @@ public class Step implements Jsonable{
         this.stepName = stepName;
     }
 
+    public List<String>  getAssertData() {
+        return assertData;
+    }
+
+    public void setAssertData(List<String> assertData) {
+        this.assertData = assertData;
+    }
+    public void incrementScreenShot(){
+        ++errorScreenShot;
+    }
+    public int getErrorScreenShot(){
+        return  errorScreenShot;
+    }
+
+    public int getMaxErrorScreens() {
+        return maxErrorScreens;
+    }
+
+    public void setMaxErrorScreens(int maxErrorScreens) {
+        this.maxErrorScreens = maxErrorScreens;
+    }
 }
