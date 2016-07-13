@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 public class Config {
     @SerializedName("visible")
-    private boolean visibile;
+    private boolean visibile = true;
     @SerializedName("baseUrl")
     private String baseUrl;
     @SerializedName("load")

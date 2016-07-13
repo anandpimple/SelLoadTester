@@ -65,6 +65,7 @@ public class SeleniumJobInvoker implements Callable<String>{
     private void executeTasks(List<TestTask> tasks) throws FileNotFoundException {
         if(null != tasks){
             for(TestTask task : tasks){
+                logger.info("Executing task "+task.getName()+". Thread is "+this.hashCode());
                 SeleniumTaskAbstractFactory.getTask(task).execute();
             }
         }

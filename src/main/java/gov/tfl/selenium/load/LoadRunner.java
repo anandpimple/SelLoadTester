@@ -29,11 +29,10 @@ public class LoadRunner {
 
         testStartTime = System.currentTimeMillis();
         logger.info("Started test at : "+new Date(testStartTime));
-        for( int i = 1; i <= config.getNoOfTotalThreads(); i++){
-            executor.submit(new SeleniumJobInvoker(config,test));
-        }
         executor =  Executors.newFixedThreadPool((int)config.getNoOfTotalThreads());
-
+        for( int i = 1; i <= config.getNoOfTotalThreads(); i++){
+            seleniumWebJobs.add(new SeleniumJobInvoker(config,test));
+        }
     }
 
     private void configure(Map map) {
@@ -48,38 +47,6 @@ public class LoadRunner {
 
     public Test getTest() {
         return test;
-    }
-
-    private void configureJob(SeleniumJobInvoker job, Map value) {
-        logger.log(Level.INFO,"Value is : "+value);
-        job.setUrl((String)value.get("url"));
-        //ob.setStartTask(configureTask((Map)value.get("startTask"),job.getDriver()));
-       // job.setEndTask(configureTask((Map)value.get("endTask"),job.getDriver()));
-        Map repetableTask = (Map)value.get("repetableTasks");
-        if(null != repetableTask) {
-            List<SeleniumTask> repetableSelTask = new ArrayList<SeleniumTask>();
-            for (Object obj : repetableTask.entrySet()) {
-                Map.Entry stepEntry = (Map.Entry)obj;
-                logger.log(Level.INFO,"Configuring repetable task "+(String)stepEntry.getKey());
-               // repetableSelTask.add(configureTask((Map)stepEntry.getValue(),job.getDriver()));
-            }
-            job.setRepetableTask(repetableSelTask);
-        }
-    }
-    private SeleniumTask configureTask(TestTask task, WebDriver driver){
-        SeleniumTask selTask = null;
-//        if(null != task){
-//            String inputFilePath = null;// != (String)task.get("inputFile")?dataDirectory+(String)task.get("inputFile"):null;
-//            if(task.getType() == TestTask.TaskType.WebTask)
-////                try {
-////                } catch (FileNotFoundException e) {
-////                    throw new IllegalArgumentException("Input file "+inputFilePath+" have issue.",e);
-////                }
-//            else
-//                throw new IllegalArgumentException("Only Web tasks are supported");
-//
-//        }
-        return selTask;
     }
 
     public static String getDataAsString(String fileName) throws IOException {
@@ -106,7 +73,8 @@ public class LoadRunner {
 
     public void processLoad() throws InterruptedException, IOException {
         try{
-           executor.invokeAll(seleniumWebJobs);
+            logger.info("Started processing threads");
+            executor.invokeAll(seleniumWebJobs);
         }finally{
             executor.shutdownNow();
         }

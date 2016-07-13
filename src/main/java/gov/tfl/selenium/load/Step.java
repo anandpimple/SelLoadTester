@@ -45,7 +45,7 @@ public class Step implements Jsonable<Step>{
     }
 
     public Type getType() {
-        return null != type ? Type.valueOf(type):Type.ID;
+        return null != type ? Type.valueOf(type.toUpperCase()):Type.ID;
     }
 
     public void setType(String type) {

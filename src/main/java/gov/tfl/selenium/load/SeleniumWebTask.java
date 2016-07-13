@@ -64,7 +64,7 @@ public class SeleniumWebTask implements SeleniumTask {
             for(String test : step.getAsserts()){
                 boolean value = driver.getPageSource().contains(test);
                 if(!value){
-                    String errorString = "Test : "+testName+" with Step name : "+step.getName()+" and Assert "+test+" failed.";
+                    String errorString = "Test : "+task.getName()+" with Step name : "+step.getName()+" and Assert "+test+" failed.";
                     logger.log(Level.WARNING,errorString);
                     error = true;
                 }
@@ -125,31 +125,19 @@ public class SeleniumWebTask implements SeleniumTask {
     }
     public void execute(){
         logger.info("Executing test "+task.getName());
-        if(null != task.) {
-            driver.get(url);
-            if(getPageWait() > 0)
-                driver.manage().timeouts().implicitlyWait(getPageWait(), TimeUnit.MILLISECONDS);
-        }
         Step stepA = null;
         try {
-            for (Step step : steps) {
+            for (Step step : task.getSteps()) {
                 stepA = step;
                 this.perform(step);
             }
         }catch(Exception e){
 
-            logger.info("Test "+testName+" Failed.");
+            logger.info("Test "+task.getName()+" Failed.");
             logger.info("Step data : "+(null != stepA ?stepA.toJson():" Step is null"));
             logger.info("Exception is : "+e.getMessage());
+            e.printStackTrace();
             assert(false);
         }
-    }
-
-    public long getPageWait() {
-        return pageWait;
-    }
-
-    public void setPageWait(long pageWait) {
-        this.pageWait = pageWait;
     }
 }

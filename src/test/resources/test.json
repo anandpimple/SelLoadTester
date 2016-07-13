@@ -1,6 +1,6 @@
 {
   "config": {
-    "baseUrl": "http://localhost:8080/portal/auth/portal/opus/default",
+    "baseUrl": "http://www.bbc.co.uk",
     "load": "1",
     "timeLaps": "1",
     "rampUpTime": "6",
@@ -15,7 +15,7 @@
         "steps": [
           {
             "name":"Input username",
-            "id": "j_username",
+            "id": "orb-search-q",
             "type": "id",
             "action": "input",
             "value": "mobileagent",

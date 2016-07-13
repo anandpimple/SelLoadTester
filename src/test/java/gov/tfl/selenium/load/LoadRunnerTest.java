@@ -17,6 +17,7 @@ public class LoadRunnerTest {
         System.out.println(test1.getBefore().get(0).getName());
         System.out.println(test1.getBefore().get(0).getType());
         System.out.println(test1.getBefore().get(0).getSteps());
+        runner.processLoad();
     }
 
 }
