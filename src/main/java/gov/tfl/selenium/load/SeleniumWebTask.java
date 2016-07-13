@@ -20,34 +20,27 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
  * Created by dev on 11/05/16.
  */
 public class SeleniumWebTask implements SeleniumTask {
     private WebDriver driver;
-    private List<Step> steps;
-    private String testName;
-    private String url;
-    private long pageWait;
     private final static Logger logger = Logger.getLogger(SeleniumWebTask.class.getName());
     private FileData fileData;
     private boolean error = false;
-
+    private TestTask task;
     public boolean hasError() {
         return error;
     }
 
-    public SeleniumWebTask(WebDriver driver, String testName, List<Step> steps, String url, String fileName) throws FileNotFoundException {
-        this.driver = driver;
-        this.steps = steps;
-        this.testName = testName;
-        this.url = url;
-        if(null != fileName)
-            fileData = new FileData(fileName);
+    public SeleniumWebTask(TestTask task) throws FileNotFoundException {
+        this.task =task;
+        driver = (WebDriver) task.getDriver();
     }
     protected void perform(Step step){
-        WebElement element = driver.findElement(getBy(step.getIdentifier(), step.getType()));
+        WebElement element = driver.findElement(getBy(step.getId(), step.getType()));
         Row row = null != fileData?fileData.nextElement():null;
         switch(step.getAction()){
             case SELECT:{
@@ -67,39 +60,40 @@ public class SeleniumWebTask implements SeleniumTask {
         if(step.getWait() > 0){
             driver.manage().timeouts().implicitlyWait(step.getWait(), TimeUnit.MILLISECONDS);
         }
-        if(null != step.getAssertData()){
-            for(String test : step.getAssertData()){
+        if(null != step.getAsserts()){
+            for(String test : step.getAsserts()){
                 boolean value = driver.getPageSource().contains(test);
                 if(!value){
-                    String errorString = "Test : "+testName+" with Step name : "+step.getStepName()+" and Assert "+test+" failed.";
+                    String errorString = "Test : "+testName+" with Step name : "+step.getName()+" and Assert "+test+" failed.";
+                    logger.log(Level.WARNING,errorString);
                     error = true;
                 }
-                if(!value && step.getMaxErrorScreens() > step.getErrorScreenShot()){
-                    try {
-//                        BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-//                        ImageIO.write(image, "png", new File("/home/dev//screenshot.png"));
-                        File newFile = new File("/home/dev/"+ testName+"_"+step.getStepName()+"_"+RandomStringUtils.randomAlphabetic(6)+".PNG");
-                        if(driver instanceof HeadlessScreenshotDriver) {
-                            byte[] zipFileBytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-                            FileUtils.writeByteArrayToFile(newFile, zipFileBytes);
-                            //System.out.println("File name is "+newFile.getName());
-                        }else{
-                            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-                            //System.out.println("File name is "+newFile.getName());
-                            FileUtils.copyFile(scrFile,newFile);
-                        }
-                        step.incrementScreenShot();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+//                if(!value && step.getMaxErrorScreens() > step.getErrorScreenShot()){
+//                    try {
+////                        BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+////                        ImageIO.write(image, "png", new File("/home/dev//screenshot.png"));
+//                        File newFile = new File("/home/dev/"+ testName+"_"+step.getStepName()+"_"+RandomStringUtils.randomAlphabetic(6)+".PNG");
+//                        if(driver instanceof HeadlessScreenshotDriver) {
+//                            byte[] zipFileBytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+//                            FileUtils.writeByteArrayToFile(newFile, zipFileBytes);
+//                            //System.out.println("File name is "+newFile.getName());
+//                        }else{
+//                            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+//                            //System.out.println("File name is "+newFile.getName());
+//                            FileUtils.copyFile(scrFile,newFile);
+//                        }
+//                        step.incrementScreenShot();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 //assertTrue();
             }
         }
     }
 
     private String getData(Step step, Row row) {
-        int index = fileData.getIndex(step.getIdentifier());
+        int index = fileData.getIndex(step.getId());
         //System.out.println(step.getIdentifier()+" index is "+index+" and value is "+row.getData().get(index).getData());
         return null != row?row.getData().get(index).getData():step.getValue();
     }
@@ -130,8 +124,8 @@ public class SeleniumWebTask implements SeleniumTask {
         return by;
     }
     public void execute(){
-        logger.info("Executing test "+testName);
-        if(null != url) {
+        logger.info("Executing test "+task.getName());
+        if(null != task.) {
             driver.get(url);
             if(getPageWait() > 0)
                 driver.manage().timeouts().implicitlyWait(getPageWait(), TimeUnit.MILLISECONDS);

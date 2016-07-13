@@ -25,11 +25,11 @@ public class MultiTask {
             initTask.call();
         }
         if(!steps.isEmpty()) {
-            while (!config.shouldTerminate()) {
-                for (Callable task : steps){
-                    task.call();
-                }
-            }
+//            while (!config.shouldTerminate()) {
+//                for (Callable task : steps){
+//                    task.call();
+//                }
+//            }
         }
         if(null != endTask){
             endTask.call();

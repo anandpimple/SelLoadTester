@@ -1,0 +1,71 @@
+{
+  "config": {
+    "baseUrl": "http://localhost:8080/portal/auth/portal/opus/default",
+    "load": "1",
+    "timeLaps": "1",
+    "rampUpTime": "6",
+    "pageWait": "2"
+  },
+  "test": {
+    "name": "Failed card test",
+    "description": "To check capacity of failed card test",
+    "before": [
+      {
+        "name": "Login",
+        "steps": [
+          {
+            "name":"Input username",
+            "id": "j_username",
+            "type": "id",
+            "action": "input",
+            "value": "mobileagent",
+            "mappeddata": "username"
+          }
+        ]
+
+      }
+    ],
+    "contineous": [],
+    "after": []
+  },
+  "FailedCardTest": {
+    "url": "portal",
+    "startTask": {
+      "name": "Opus Login",
+      "type": "WebTask",
+      "inputFile": "mobileAgentFile.txt",
+      "steps": {
+        "input_user": {
+          "identifier": "j_username",
+          "type": "id",
+          "action": "input"
+        },
+        "input_password": {
+          "identifier": "j_password",
+          "type": "id",
+          "action": "input"
+        },
+        "submit": {
+          "identifier": "login",
+          "type": "name",
+          "action": "click",
+          "assertData": [
+            "Replace failed Oyster card",
+            "Anand Pimple"
+          ]
+        }
+      }
+    },
+    "endTask": {
+      "name": "Opus Logout",
+      "type": "WebTask",
+      "steps": {
+        "logout": {
+          "identifier": "signIn",
+          "type": "id",
+          "action": "click"
+        }
+      }
+    }
+  }
+}

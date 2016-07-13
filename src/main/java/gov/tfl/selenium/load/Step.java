@@ -1,6 +1,7 @@
 package gov.tfl.selenium.load;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 
 import java.util.List;
@@ -8,31 +9,31 @@ import java.util.List;
 /**
  * Created by dev on 11/05/16.
  */
-public class Step implements Jsonable{
-    private String stepName;
-    private String identifier;
+public class Step implements Jsonable<Step>{
+    private String name;
+    private String id;
     private String value;
-    private Type type;
-    private Action action;
-    private long wait;
-    private List<String>  assertData;
-    private int maxErrorScreens = 5;
+    private String type;
+    private String action;
+    @SerializedName("mappeddata")
+    private String datamapping;
+    private List<String> asserts;
+    private long wait = -1;
 
-    private int errorScreenShot =0;
-    public String getIdentifier() {
-        return identifier;
+    public String getName() {
+        return name;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public long getWait() {
-        return wait;
+    public String getId() {
+        return id;
     }
 
-    public void setWait(long wait) {
-        this.wait = wait;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getValue() {
@@ -44,49 +45,45 @@ public class Step implements Jsonable{
     }
 
     public Type getType() {
-        return type;
+        return null != type ? Type.valueOf(type):Type.ID;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 
     public Action getAction() {
-        return action;
+        return null != action ? Action.valueOf(action):Action.CLICK;
     }
 
-    public void setAction(Action action) {
+    public void setAction(String action) {
         this.action = action;
     }
+
+    public String getDatamapping() {
+        return datamapping;
+    }
+
+    public void setDatamapping(String datamapping) {
+        this.datamapping = datamapping;
+    }
+
+    public List<String> getAsserts() {
+        return asserts;
+    }
+
+    public void setAsserts(List<String> asserts) {
+        this.asserts = asserts;
+    }
+
+    public long getWait() {
+        return wait;
+    }
+
+    public void setWait(long wait) {
+        this.wait = wait;
+    }
     public String toString(){
-        return gson.toJson(this);
-    }
-    public String getStepName() {
-        return stepName;
-    }
-    public void setStepName(String stepName) {
-        this.stepName = stepName;
-    }
-
-    public List<String>  getAssertData() {
-        return assertData;
-    }
-
-    public void setAssertData(List<String> assertData) {
-        this.assertData = assertData;
-    }
-    public void incrementScreenShot(){
-        ++errorScreenShot;
-    }
-    public int getErrorScreenShot(){
-        return  errorScreenShot;
-    }
-
-    public int getMaxErrorScreens() {
-        return maxErrorScreens;
-    }
-
-    public void setMaxErrorScreens(int maxErrorScreens) {
-        this.maxErrorScreens = maxErrorScreens;
+        return super.toString()+" : "+toJson();
     }
 }

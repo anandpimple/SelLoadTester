@@ -1,93 +1,89 @@
 package gov.tfl.selenium.load;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by User on 4/11/2016.
  */
+
 public class Config {
-    public static final String LOADCONFIG_PROPS = "loadconfig.props";
-    public static final String MAX_LOAD = "maxLoad";
-    public static final String RUN_TIME = "runTime";
-    public static final String TERMINATE_NOW = "terminateNow";
-    public static final String BASE_URL = "baseUrl";
-    public static final String PAGE_WAIT = "pageWait";
-    public static final String VISIBLE = "visible";
-    private Properties properties = new Properties();
-    private long startTime = System.currentTimeMillis();
-    private long lastModified;
-    public Config() throws IOException{
-        loadProps();
+    @SerializedName("visible")
+    private boolean visibile;
+    @SerializedName("baseUrl")
+    private String baseUrl;
+    @SerializedName("load")
+    private long noOfTotalThreads = -1;
+    @SerializedName("time")
+    private long runTime = -1;
+    @SerializedName("timeLaps")
+    private long timeLaps = -1;
+    @SerializedName("rampUpTime")
+    private long rampUpTime = -1;
+    @SerializedName("pageWait")
+    private long defaultPageWait = -1;
+
+    public boolean isVisibile() {
+        return visibile;
     }
 
-    private long getLastModified(){
-        File file = new File(getClass().getClassLoader().getResource(LOADCONFIG_PROPS).getFile());
-        return file.lastModified();
-    }
-    private void loadProps() throws IOException {
-        InputStream stream = getClass().getClassLoader().getResourceAsStream(LOADCONFIG_PROPS);
-        try {
-            properties.load(stream);
-            lastModified = getLastModified();
-        }finally {
-            stream.close();
-        }
+    public void setVisibile(boolean visibile) {
+        this.visibile = visibile;
     }
 
-    public String getBaseUrl(){
-        return getConfig(BASE_URL);
-    }
-    public long getPageWait(){
-        try{
-            return Long.parseLong(getConfig(PAGE_WAIT));
-        }catch(Exception e){
-            return 1000l;
-        }
-    }
-    public int getMaxLoad(){
-        try {
-            return Integer.parseInt(properties.getProperty(MAX_LOAD));
-        }catch (Exception e){
-            return 1;
-        }
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
-    private boolean terminateNow() throws IOException{
-        try {
-            if(lastModified < getLastModified()){
-                loadProps();
-            }
-            return Boolean.valueOf(properties.getProperty(TERMINATE_NOW));
-        }catch(Exception e){
-            return false;
-        }
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
-    private long getRunTime(){
-        try {
-            return Long.parseLong(properties.getProperty(RUN_TIME))*1000;
-        }catch (Exception e){
-            return 10*1000;
-        }
-    }
-    public void resetStartTime(){
-        startTime = System.currentTimeMillis();
-    }
-    public boolean shouldTerminate() throws IOException{
-        return terminateNow() || getRunTime() <= (System.currentTimeMillis() - startTime);
+    public long getNoOfTotalThreads() {
+        return noOfTotalThreads;
     }
 
-    public boolean isBackground() {
-        try {
-            return !Boolean.valueOf(properties.getProperty(VISIBLE));
-        }catch(Exception e){
-            return true;
-        }
+    public void setNoOfTotalThreads(long noOfTotalThreads) {
+        this.noOfTotalThreads = noOfTotalThreads;
     }
-    public String getConfig(String name){
-        return properties.getProperty(name);
+
+    public long getRunTime() {
+        return runTime;
+    }
+
+    public void setRunTime(long runTime) {
+        this.runTime = runTime;
+    }
+
+    public long getTimeLaps() {
+        return timeLaps;
+    }
+
+    public void setTimeLaps(long timeLaps) {
+        this.timeLaps = timeLaps;
+    }
+
+    public long getRampUpTime() {
+        return rampUpTime;
+    }
+
+    public void setRampUpTime(long rampUpTime) {
+        this.rampUpTime = rampUpTime;
+    }
+
+    public long getDefaultPageWait() {
+        return defaultPageWait;
+    }
+
+    public void setDefaultPageWait(long defaultPageWait) {
+        this.defaultPageWait = defaultPageWait;
     }
 }

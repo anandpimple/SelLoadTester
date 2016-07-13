@@ -11,7 +11,7 @@ public class StepTest {
     @Test
     public void testToString() throws Exception {
         Step step = new Step();
-        step.setStepName("First step");
+       //step.setStepName("First step");
         assertEquals(OUTPUT,step.toJson());
     }
 }
