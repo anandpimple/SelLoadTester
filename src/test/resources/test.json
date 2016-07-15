@@ -1,10 +1,12 @@
 {
   "config": {
-    "baseUrl": "http://www.bbc.co.uk",
+    "baseUrl": "http://localhost:8080/oyster",
     "load": "1",
-    "timeLaps": "1",
+    "timeLaps": "60",
     "rampUpTime": "6",
-    "pageWait": "2"
+    "pageWait": "2",
+    "visible":"true",
+    "time":"60"
   },
   "test": {
     "name": "Failed card test",
@@ -15,18 +17,57 @@
         "steps": [
           {
             "name":"Input username",
-            "id": "orb-search-q",
+            "id": "j_username",
             "type": "id",
             "action": "input",
-            "value": "mobileagent",
+            "value": "testuser7",
             "mappeddata": "username"
+          },
+          {
+            "name":"Input password",
+            "id": "j_password",
+            "type": "id",
+            "action": "input",
+            "value": "Password1",
+            "mappeddata": "username"
+          },
+          {
+            "name":"Click submit",
+            "id": "SignIn",
+            "type": "id",
+            "action": "click"
           }
         ]
 
       }
     ],
-    "contineous": [],
-    "after": []
+    "contineous": [
+      {
+        "name": "Click Card",
+        "steps": [
+          {
+            "name": "Click logout",
+            "id": "//div[@data-id='123001234178']",
+            "type": "xpath",
+            "action": "click",
+            "wait":"20"
+          }
+        ]
+      }
+    ],
+    "after": [
+      {
+        "name": "Logout",
+        "steps": [
+          {
+            "name": "Click logout",
+            "id": "Sign out",
+            "type": "text",
+            "action": "click"
+          }
+          ]
+      }
+    ]
   },
   "FailedCardTest": {
     "url": "portal",

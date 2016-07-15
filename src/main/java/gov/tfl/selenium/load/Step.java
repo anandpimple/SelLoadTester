@@ -53,7 +53,7 @@ public class Step implements Jsonable<Step>{
     }
 
     public Action getAction() {
-        return null != action ? Action.valueOf(action):Action.CLICK;
+        return null != action ? Action.valueOf(action.toUpperCase()):Action.CLICK;
     }
 
     public void setAction(String action) {

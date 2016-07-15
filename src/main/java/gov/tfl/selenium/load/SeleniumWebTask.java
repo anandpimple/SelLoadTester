@@ -93,9 +93,10 @@ public class SeleniumWebTask implements SeleniumTask {
     }
 
     private String getData(Step step, Row row) {
-        int index = fileData.getIndex(step.getId());
-        //System.out.println(step.getIdentifier()+" index is "+index+" and value is "+row.getData().get(index).getData());
-        return null != row?row.getData().get(index).getData():step.getValue();
+//        int index = fileData.getIndex(step.getId());
+//        //System.out.println(step.getIdentifier()+" index is "+index+" and value is "+row.getData().get(index).getData());
+//        return null != row?row.getData().get(index).getData():step.getValue();
+        return step.getValue();
     }
 
     private By getBy(String id,Type type){
@@ -117,6 +118,14 @@ public class SeleniumWebTask implements SeleniumTask {
                 by = By.name(id);
                 break;
             }
+            case XPATH: {
+                by = By.xpath(id);
+                break;
+            }
+            case PARTIALTEXT: {
+                by = By.partialLinkText(id);
+                break;
+            }
             default :{
                 by = By.xpath(id);
             }
@@ -130,6 +139,8 @@ public class SeleniumWebTask implements SeleniumTask {
             for (Step step : task.getSteps()) {
                 stepA = step;
                 this.perform(step);
+                if(step.getWait() > 0)
+                    LoadRunner.pause(step.getWait()*1000);
             }
         }catch(Exception e){
 

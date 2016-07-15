@@ -30,8 +30,18 @@ public class LoadRunner {
         testStartTime = System.currentTimeMillis();
         logger.info("Started test at : "+new Date(testStartTime));
         executor =  Executors.newFixedThreadPool((int)config.getNoOfTotalThreads());
+        long waitForNextThread = (config.getRampUpTime()/10)*1000;
         for( int i = 1; i <= config.getNoOfTotalThreads(); i++){
+            if(i > 1){
+                pause(waitForNextThread);
+            }
             seleniumWebJobs.add(new SeleniumJobInvoker(config,test));
+        }
+    }
+    public static void pause(long time){
+        long ctime = System.currentTimeMillis();
+        while(time > System.currentTimeMillis()-ctime){
+            logger.log(Level.FINEST,"Paused....");
         }
     }
 

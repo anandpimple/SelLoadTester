@@ -30,7 +30,7 @@ public class SeleniumJobInvoker implements Callable<String>{
     public SeleniumJobInvoker(Config config,Test test) throws IOException {
         this.config = config;
         this.test = test;
-        driver = this.config.isVisibile()?new HtmlUnitDriver():new FirefoxDriver();
+        driver = !this.config.isVisibile()?new HtmlUnitDriver():new FirefoxDriver();
     }
     public void finalize(){
         if(driver != null)
@@ -50,7 +50,9 @@ public class SeleniumJobInvoker implements Callable<String>{
             navigate(config.getBaseUrl());
             executeTasks(test.getBefore());
             if(test.getContineous() != null && !test.getContineous().isEmpty()) {
-                while(config.getRunTime() > (System.currentTimeMillis() - startTime) ) {
+                logger.info("Runtime...."+(config.getRunTime() +" Time"+ (System.currentTimeMillis() - startTime)));
+                logger.info("Executing contineous jobs....."+(config.getRunTime() > (System.currentTimeMillis() - startTime)));
+                while(config.getRunTime()*1000 > (System.currentTimeMillis() - startTime) ) {
                     executeTasks(test.getContineous());
                 }
             }
@@ -66,6 +68,7 @@ public class SeleniumJobInvoker implements Callable<String>{
         if(null != tasks){
             for(TestTask task : tasks){
                 logger.info("Executing task "+task.getName()+". Thread is "+this.hashCode());
+                task.setDriver(driver);
                 SeleniumTaskAbstractFactory.getTask(task).execute();
             }
         }
